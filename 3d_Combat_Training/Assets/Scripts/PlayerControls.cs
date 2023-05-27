@@ -21,8 +21,9 @@ public class PlayerControls : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerController = GetComponent<CharacterController>();
         count = 0;
+        playerController = GetComponent<CharacterController>();
+        FindObjectOfType<GameManager>().SetCountText(count);
 
         SetCountText();
         winTextObject.SetActive(false);
@@ -31,7 +32,6 @@ public class PlayerControls : MonoBehaviour
     void SetCountText()
     {
         countText.text = "Count:" + count.ToString();
-        if(count >= 5)
         {
             winTextObject.SetActive(true);
         }
@@ -52,15 +52,23 @@ public class PlayerControls : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("PickUp"))
+        if (other.gameObject.CompareTag("PickUp"))
         {
+            count += 1;
+            FindObjectOfType<GameManager>().SetCountText(count);
             other.gameObject.SetActive(false);
-            count = count + 1;
 
             SetCountText();
         }
-        
+
+        else if (other.gameObject.CompareTag("Enemy")) 
+        {
+            gameObject.SetActive(false); 
+            FindObjectOfType<GameManager>().EndGame();
+
+
+        }
+
+
     }
-
-
 }
